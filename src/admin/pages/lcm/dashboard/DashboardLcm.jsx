@@ -12,32 +12,53 @@ import { useDashboardLcm } from "../../../../context/DashboardLcmContext";
 // import { useAuth } from "../../../../context/AuthContext";
 
 const DashboardLcm = () => {
-  const {daysLcm, pendingLcm, expiredLcm, paidLcm, ytdLcm, pendingYtdLcm, expiredYtdLcm, paidYtdLcm, totalLcm,
-          totalMonthLcm, grafikStudentLcm, grafikRevenueLcm, studentY, studentM, sourceLcm, waitTodayLcm,
-          waitYearLcm, isAnyLoading, error, refetch, isRevenueYLoading, isRevenueMLoading} = useDashboardLcm();
+  const {
+    daysLcm,
+    pendingLcm,
+    expiredLcm,
+    paidLcm,
+    ytdLcm,
+    pendingYtdLcm,
+    expiredYtdLcm,
+    paidYtdLcm,
+    totalLcm,
+    totalMonthLcm,
+    grafikStudentLcm,
+    grafikRevenueLcm,
+    studentY,
+    studentM,
+    sourceLcm,
+    waitTodayLcm,
+    waitYearLcm,
+    isAnyLoading,
+    error,
+    refetch,
+    isRevenueYLoading,
+    isRevenueMLoading,
+  } = useDashboardLcm();
   const [activeTab, setActiveTab] = useState("all-time");
   const selectedRevenueLcm = activeTab === "monthly" ? totalMonthLcm : totalLcm;
   const selectedTotalLcm = activeTab === "monthly" ? studentM : studentY;
 
   // const { user: rawUser } = useAuth();
-  
-    // const user = {
-    //   ...rawUser,
-    //   jobs: typeof rawUser?.jobs === "string"
-    //     ? rawUser.jobs.split(",").map(Number)
-    //     : rawUser?.jobs,
-    // };
+
+  // const user = {
+  //   ...rawUser,
+  //   jobs: typeof rawUser?.jobs === "string"
+  //     ? rawUser.jobs.split(",").map(Number)
+  //     : rawUser?.jobs,
+  // };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
   const CARD_TODAY = [
-    { title: "Total Sign Up", count: daysLcm?.user_count ?? '-' },
-    { title: "Pending", count: pendingLcm?.count ?? '-' },
-    { title: "Expired", count: expiredLcm?.count ?? '-' },
-    { title: "Paid", count: paidLcm?.count ?? '-' },
-    { title: "Waiting Approval", count: waitTodayLcm?.count ?? '-' },
+    { title: "Total Sign Up", count: daysLcm?.user_count ?? "-" },
+    { title: "Pending", count: pendingLcm?.count ?? "-" },
+    { title: "Expired", count: expiredLcm?.count ?? "-" },
+    { title: "Paid", count: paidLcm?.count ?? "-" },
+    { title: "Waiting Approval", count: waitTodayLcm?.count ?? "-" },
   ];
 
   const CARD_YTD = [
@@ -56,7 +77,9 @@ const DashboardLcm = () => {
       content: "Total data yang belum melakukan pembayaran",
     },
     {
-      icon: <MdOutlineCancel className="text-white" style={{ fontSize: "28px" }} />,
+      icon: (
+        <MdOutlineCancel className="text-white" style={{ fontSize: "28px" }} />
+      ),
       title: "Expired",
       count: expiredYtdLcm?.count ?? "-",
       bgColor: "bg-danger",
@@ -71,12 +94,14 @@ const DashboardLcm = () => {
         "Total data yang sudah melakukan pembayaran dan sudah diapprove oleh finance",
     },
     {
-      icon: <FaHourglassHalf className="text-white" style={{ fontSize: "28px" }} />,
+      icon: (
+        <FaHourglassHalf className="text-white" style={{ fontSize: "28px" }} />
+      ),
       title: "Waiting Approval",
       count: waitYearLcm?.count ?? "-",
       bgColor: "bg-info",
       content:
-      "Total data yang sudah melakukan pembayaran namun belum diapprove oleh finance",
+        "Total data yang sudah melakukan pembayaran namun belum diapprove oleh finance",
     },
   ];
 
@@ -130,7 +155,7 @@ const DashboardLcm = () => {
     </div>
   );
 
-  // Grafik Student
+  // Grafik options
   const optionsStudent = {
     chart: {
       type: "bar",
@@ -169,7 +194,7 @@ const DashboardLcm = () => {
       },
     },
     xaxis: {
-      categories: grafikStudentLcm?.labels ?? [], // dynamic dari API
+      categories: grafikStudentLcm?.categories ?? [], // Menampilkan kategori dari API
     },
     legend: {
       position: "right",
@@ -178,14 +203,15 @@ const DashboardLcm = () => {
     fill: {
       opacity: 1,
     },
+    colors: ["#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#9B59B6", "#1ABC9C"],
   };
 
-  const seriesStudent = [
-    {
-      name: "Jumlah Student",
-      data: grafikStudentLcm?.series?.[0] ?? [],
-    },
-  ]; // dynamic dari API
+  // Menyiapkan data seri untuk grafik
+  const seriesStudent =
+    grafikStudentLcm?.series?.map((serie) => ({
+      name: serie.name,
+      data: serie.data,
+    })) ?? [];
 
   // Grafik Revenue
   const optionRevenue = {
@@ -241,7 +267,7 @@ const DashboardLcm = () => {
       },
     },
     xaxis: {
-      categories: grafikRevenueLcm?.labels ?? [],
+      categories: grafikRevenueLcm?.categories ?? [],
     },
     yaxis: {
       labels: {
@@ -261,18 +287,27 @@ const DashboardLcm = () => {
     fill: {
       opacity: 1,
     },
+    colors: ["#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#9B59B6", "#1ABC9C"],
   };
 
-  const seriesRevenue = [
-    {
-      name: "Revenue",
-      data: grafikRevenueLcm?.series?.[0] ?? [],
-    },
-  ];
+  // const seriesRevenue = [
+  //   {
+  //     name: "Revenue",
+  //     data: grafikRevenueLcm?.series ?? [],
+  //   },
+  // ];
+  const seriesRevenue =
+    grafikRevenueLcm?.series?.map((serie) => ({
+      name: serie.name,
+      data: serie.data,
+    })) ?? [];
 
   if (isAnyLoading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "80vh" }}
+      >
         <div className="spinner-border text-primary" role="status" />
       </div>
     );
@@ -308,7 +343,9 @@ const DashboardLcm = () => {
                     <li className="nav-item">
                       <button
                         type="button"
-                        className={`nav-link ${activeTab === "all-time" ? "active" : ""}`}
+                        className={`nav-link ${
+                          activeTab === "all-time" ? "active" : ""
+                        }`}
                         role="tab"
                         onClick={() => handleTabClick("all-time")}
                       >
@@ -318,7 +355,9 @@ const DashboardLcm = () => {
                     <li className="nav-item">
                       <button
                         type="button"
-                        className={`nav-link ${activeTab === "monthly" ? "active" : ""}`}
+                        className={`nav-link ${
+                          activeTab === "monthly" ? "active" : ""
+                        }`}
                         role="tab"
                         onClick={() => handleTabClick("monthly")}
                       >
@@ -331,11 +370,18 @@ const DashboardLcm = () => {
               <div className="card-body d-flex flex-column">
                 <h3 className="text-center mb-4">
                   {activeTab === "all-time"
-                  ? (isRevenueYLoading ? "Loading..." : totalLcm?.total?.total_revenue)
-                  : (isRevenueMLoading ? "Loading..." : totalMonthLcm?.total?.total_revenue)}
+                    ? isRevenueYLoading
+                      ? "Loading..."
+                      : totalLcm?.total?.total_revenue
+                    : isRevenueMLoading
+                    ? "Loading..."
+                    : totalMonthLcm?.total?.total_revenue}
                 </h3>
                 <div className="flex-grow-1 d-flex flex-column">
-                  <div className="table-responsive" style={{ overflowY: 'auto', maxHeight: '280px' }}>
+                  <div
+                    className="table-responsive"
+                    style={{ overflowY: "auto", maxHeight: "280px" }}
+                  >
                     <table className="table table-striped mb-0">
                       <thead className="text-center">
                         <tr>
@@ -361,10 +407,16 @@ const DashboardLcm = () => {
                   <table className="table table-striped mt-2">
                     <tbody className="text-center">
                       <tr>
-                        <td><strong>TOTAL</strong></td>
+                        <td>
+                          <strong>TOTAL</strong>
+                        </td>
                         <td></td>
                         <td></td>
-                        <td><strong>{selectedRevenueLcm?.total?.total_revenue}</strong></td>
+                        <td>
+                          <strong>
+                            {selectedRevenueLcm?.total?.total_revenue}
+                          </strong>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -408,7 +460,10 @@ const DashboardLcm = () => {
                 </div>
               </div>
               <div className="card-body">
-                <div className="table-responsive" style={{ overflowY: 'auto', maxHeight: '280px' }}>
+                <div
+                  className="table-responsive"
+                  style={{ overflowY: "auto", maxHeight: "280px" }}
+                >
                   <table className="table table-striped">
                     <thead className="text-center">
                       <tr>
@@ -418,13 +473,13 @@ const DashboardLcm = () => {
                       </tr>
                     </thead>
                     <tbody className="text-center">
-                        {selectedTotalLcm?.data?.map((item, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.program}</td>
-                            <td>{item.student_count}</td>
-                          </tr>
-                        ))}
+                      {selectedTotalLcm?.data?.map((item, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{item.program}</td>
+                          <td>{item.student_count}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -432,10 +487,16 @@ const DashboardLcm = () => {
                   <table className="table table-striped mt-2">
                     <tbody className="text-center">
                       <tr>
-                        <td><strong>TOTAL</strong></td>
+                        <td>
+                          <strong>TOTAL</strong>
+                        </td>
                         <td></td>
                         <td></td>
-                        <td><strong>{selectedTotalLcm?.total?.total_student ?? '-'}</strong></td>
+                        <td>
+                          <strong>
+                            {selectedTotalLcm?.total?.total_student ?? "-"}
+                          </strong>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -477,7 +538,6 @@ const DashboardLcm = () => {
               </div>
             </div>
           </div>
-          
 
           {/* Source */}
           {/* <div className="col-md-6 col-lg-4 col-xl-6 order-0 mb-4">

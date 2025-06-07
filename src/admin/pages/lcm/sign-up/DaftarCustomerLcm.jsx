@@ -28,14 +28,15 @@ const DaftarCustomerLcm = () => {
   });
 
   const { user: rawUser } = useAuth();
-    
+
   const user = {
     ...rawUser,
-    jobs: typeof rawUser?.jobs === "string"
-      ? rawUser.jobs.split(",").map(Number)
-      : rawUser?.jobs,
+    jobs:
+      typeof rawUser?.jobs === "string"
+        ? rawUser.jobs.split(",").map(Number)
+        : rawUser?.jobs,
   };
-  console.log(branches)
+  console.log(branches);
 
   const handleShow = (customer) => {
     setSelectedCustomer(customer);
@@ -80,13 +81,17 @@ const DaftarCustomerLcm = () => {
     // Filter Berdasarkan Program, Location, Status, dan Source
     if (filters.program && filters.program !== "All") {
       newFilteredCustomers = newFilteredCustomers.filter((lead) => {
-        return lead.children.some((program) => program.program_name === filters.program);
+        return lead.children.some(
+          (program) => program.program_name === filters.program
+        );
       });
     }
 
-     if (filters.lokasi && filters.lokasi !== "All") {
+    if (filters.lokasi && filters.lokasi !== "All") {
       newFilteredCustomers = newFilteredCustomers.filter((lead) => {
-        return lead.children.some((lokasi) => lokasi.kode_cabang === filters.lokasi);
+        return lead.children.some(
+          (lokasi) => lokasi.kode_cabang === filters.lokasi
+        );
       });
     }
 
@@ -167,9 +172,9 @@ const DaftarCustomerLcm = () => {
 
   const formatKapital = (kelas) => {
     return kelas
-      .split('_') // pisah berdasarkan underscore
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // kapital tiap kata
-      .join(' '); // gabungkan kembali dengan spasi
+      .split("_") // pisah berdasarkan underscore
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // kapital tiap kata
+      .join(" "); // gabungkan kembali dengan spasi
   };
 
   return (
@@ -211,31 +216,40 @@ const DaftarCustomerLcm = () => {
                 onChange={handleFilterChange}
               >
                 <option>All</option>
-                {programs && programs.map((program) => (
-                  <option key={program.id} value={program.name}>
-                    {program.name}
-                  </option>
-                ))}
+                {programs &&
+                  programs.map((program) => (
+                    <option key={program.id} value={program.name}>
+                      {program.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
             {/* Location */}
             <div className="col-md-2">
               <label className="form-label">LOCATION</label>
-              <select name="lokasi" className="form-select" onChange={handleFilterChange}>
+              <select
+                name="lokasi"
+                className="form-select"
+                onChange={handleFilterChange}
+              >
                 <option value="">All</option>
-                {user.jobs && user.jobs.length > 0 && Array.isArray(branches) && (
-                  <>
-                  {(user.jobs[0] === 1
-                      ? branches
-                      : branches.filter((branch) => user.jobs.includes(branch.id))
-                    ).map((branch) => (
-                      <option key={branch.id} value={branch.kode_cabang}>
-                        {branch.kode_cabang}
-                      </option>
-                    ))}
-                  </>
-                )}
+                {user.jobs &&
+                  user.jobs.length > 0 &&
+                  Array.isArray(branches) && (
+                    <>
+                      {(user.jobs[0] === 1
+                        ? branches
+                        : branches.filter((branch) =>
+                            user.jobs.includes(branch.id)
+                          )
+                      ).map((branch) => (
+                        <option key={branch.id} value={branch.kode_cabang}>
+                          {branch.kode_cabang}
+                        </option>
+                      ))}
+                    </>
+                  )}
               </select>
             </div>
 
@@ -308,36 +322,63 @@ const DaftarCustomerLcm = () => {
               </thead>
               <tbody>
                 {/* Loading & Error Handling */}
-                {isLoading && <tr><td colSpan={10}><motion.img
-                    src={logo}
-                    alt="Loading..."
-                    width={40}
-                    animate={{ rotate: 180 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                /></td></tr>}
-                {error && <tr><td colSpan={10}><p className="text-danger">Error: {error}</p></td></tr>}
+                {isLoading && (
+                  <tr>
+                    <td colSpan={10}>
+                      <motion.img
+                        src={logo}
+                        alt="Loading..."
+                        width={40}
+                        animate={{ rotate: 180 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      />
+                    </td>
+                  </tr>
+                )}
+                {error && (
+                  <tr>
+                    <td colSpan={10}>
+                      <p className="text-danger">Error: {error}</p>
+                    </td>
+                  </tr>
+                )}
 
                 {paginatedCustomers.length > 0 ? (
                   paginatedCustomers.map((customer, index) => (
                     <tr key={customer.id}>
                       <td>{(activePage - 1) * itemsPerPage + index + 1}</td>
                       <td>
-                        {new Date(customer.created_at).toLocaleDateString("id-ID", {
+                        {new Date(customer.created_at).toLocaleDateString(
+                          "id-ID",
+                          {
                             day: "2-digit",
                             month: "short",
-                            year: "numeric"
-                        })}
+                            year: "numeric",
+                          }
+                        )}
                       </td>
                       <td>
-                        {customer.tanggal_bayar ? new Date(customer.tanggal_bayar).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric"
-                        })
-                        : ""}
+                        {customer.tanggal_bayar
+                          ? new Date(customer.tanggal_bayar).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )
+                          : ""}
                       </td>
                       <td>
-                        <Link to="#" className="btn btn-link" onClick={() => handleShow(customer)}>
+                        <Link
+                          to="#"
+                          className="btn btn-link"
+                          onClick={() => handleShow(customer)}
+                        >
                           {customer.name}
                         </Link>
                       </td>
@@ -345,14 +386,14 @@ const DaftarCustomerLcm = () => {
                       <td>{customer.email}</td>
                       <td>
                         {(() => {
-                            switch (customer.apprv_stat) {
+                          switch (customer.apprv_stat) {
                             case 0:
-                                return "Reject";
+                              return "Reject";
                             case 1:
-                                return "Paid";
+                              return "Paid";
                             default:
-                                return null;
-                            }
+                              return null;
+                          }
                         })()}
                       </td>
                       <td>{customer.source}</td>
@@ -360,7 +401,7 @@ const DaftarCustomerLcm = () => {
                   ))
                 ) : (
                   <tr>
-                      <td colSpan="10">No data available</td>
+                    <td colSpan="10">No data available</td>
                   </tr>
                 )}
               </tbody>
@@ -414,7 +455,7 @@ const DaftarCustomerLcm = () => {
       </div>
 
       {/* Modal Detail */}
-      <Modal show={showModal} onHide={handleClose} centered>
+      <Modal show={showModal} onHide={handleClose} centered size="lg">
         <Modal.Header>
           <Modal.Title>DETAIL</Modal.Title>
         </Modal.Header>
@@ -444,46 +485,57 @@ const DaftarCustomerLcm = () => {
                   </p>
                   <p>
                     <strong>Tanggal Bayar: </strong>
-                    {selectedCustomer.tanggal_bayar ? new Date(selectedCustomer.tanggal_bayar).toLocaleDateString("id-ID", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric"
-                    }) : ""}
+                    {selectedCustomer.tanggal_bayar
+                      ? new Date(
+                          selectedCustomer.tanggal_bayar
+                        ).toLocaleDateString("id-ID", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : ""}
                   </p>
                   <p>
-                    <strong>Tipe Pembayaran:</strong>{' '}
-                    {selectedCustomer.link_url !== null ? 'Online Payment' : 'Offline Payment'}
+                    <strong>Tipe Pembayaran:</strong>{" "}
+                    {selectedCustomer.link_url !== null
+                      ? "Online Payment"
+                      : "Offline Payment"}
                   </p>
                   <p>
-                    <strong>Jenis Pembayaran:</strong> {selectedCustomer.link_url !== null ? 'Xendit' : formatKapital(selectedCustomer.payment_method)}
+                    <strong>Jenis Pembayaran:</strong>{" "}
+                    {selectedCustomer.link_url !== null
+                      ? "Xendit"
+                      : formatKapital(selectedCustomer.payment_method)}
                   </p>
 
                   {/* Tampilkan hanya jika Offline Payment */}
                   {selectedCustomer.link_url === null && (
                     <>
                       {/* Jika bukan Cash, tampilkan Bank dan Nama Pemilik Kartu */}
-                      {selectedCustomer.payment_method !== 'cash' && (
+                      {selectedCustomer.payment_method !== "cash" && (
                         <>
                           <p>
                             <strong>Bank:</strong> {selectedCustomer.nama_bank}
                           </p>
                           <p>
-                            <strong>Nama Pemilik Kartu:</strong> {selectedCustomer.nama_kartu}
+                            <strong>Nama Pemilik Kartu:</strong>{" "}
+                            {selectedCustomer.nama_kartu}
                           </p>
                         </>
                       )}
 
                       {/* Tampilkan Cicilan hanya jika jenis pembayaran adalah Cicilan */}
-                      {selectedCustomer.payment_method === 'cicilan_bank' && (
+                      {selectedCustomer.payment_method === "cicilan_bank" && (
                         <p>
-                          <strong>Cicilan:</strong> {selectedCustomer.bulan_cicilan} Bulan
+                          <strong>Cicilan:</strong>{" "}
+                          {selectedCustomer.bulan_cicilan} Bulan
                         </p>
                       )}
                     </>
                   )}
                 </div>
               </div>
-                
+
               <div className="table-responsive mt-4">
                 <table className="table table-bordered">
                   <thead className="text-center">
@@ -497,44 +549,90 @@ const DaftarCustomerLcm = () => {
                     </tr>
                   </thead>
                   <tbody className="text-center">
-                    {selectedCustomer.children && selectedCustomer.children.length > 0 ? (
+                    {selectedCustomer.children &&
+                    selectedCustomer.children.length > 0 ? (
                       selectedCustomer.children.map((child, index) => (
                         <tr key={child.children}>
-                        <td>{index + 1}</td>
-                        <td>{child.program_name}</td>
-                        <td>{child.kode_cabang}</td>
-                        <td>{child.nama_murid}</td>
-                        <td>
-                          {selectedCustomer.id_program === 6
-                          ? child.tipe?.charAt(0).toUpperCase() + child.tipe?.slice(1)
-                          : child.course_name}
-                        </td>
-                        <td>{formatRupiah(child.price)}</td>
-                      </tr>
+                          <td>{index + 1}</td>
+                          <td>{child.program_name}</td>
+                          <td>{child.kode_cabang}</td>
+                          <td>{child.nama_murid}</td>
+                          <td>
+                            {selectedCustomer.id_program === 6
+                              ? child.tipe?.charAt(0).toUpperCase() +
+                                child.tipe?.slice(1) +
+                                " - " +
+                                child.durasi +
+                                " Jam"
+                              : child.course_name}
+                          </td>
+                          <td>{formatRupiah(child.price)}</td>
+                        </tr>
                       ))
                     ) : (
-                        <tr>
-                            <td colSpan="4">No children data available</td>
-                        </tr>
+                      <tr>
+                        <td colSpan="4">No children data available</td>
+                      </tr>
                     )}
                     <tr>
-                      <td colSpan={5}><strong>SUBTOTAL</strong></td>
-                      <td><strong>{formatRupiah(selectedCustomer.children.reduce((sum, child) => sum + child.price, 0))}</strong></td>
+                      <td colSpan={5}>
+                        <strong>SUBTOTAL</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {selectedCustomer.id_program !== 6
+                            ? formatRupiah(
+                                selectedCustomer.children.reduce(
+                                  (sum, child) => sum + child.price,
+                                  0
+                                )
+                              )
+                            : formatRupiah(
+                                selectedCustomer.children[0]?.price *
+                                  selectedCustomer.durasi *
+                                  selectedCustomer.jmlh_anak
+                              )}
+                        </strong>
+                      </td>
                     </tr>
                     <tr>
-                      <td colSpan={5}><strong>DISCOUNT</strong></td>
-                      <td><strong>{formatRupiah(selectedCustomer.children.reduce((sum, child) => sum + child.price, 0) - selectedCustomer.total_fix)}</strong></td>
+                      <td colSpan={5}>
+                        <strong>DISCOUNT</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {selectedCustomer.id_program !== 6
+                            ? formatRupiah(
+                                selectedCustomer.children.reduce(
+                                  (sum, child) => sum + child.price,
+                                  0
+                                ) - selectedCustomer.total_fix
+                              )
+                            : formatRupiah(
+                                selectedCustomer.children[0]?.price *
+                                  selectedCustomer.durasi *
+                                  selectedCustomer.jmlh_anak -
+                                  selectedCustomer.total_fix
+                              )}
+                        </strong>
+                      </td>
                     </tr>
                     <tr>
-                      <td colSpan={5}><strong>TOTAL</strong></td>
-                      <td><strong>{formatRupiah(selectedCustomer.total_fix)}</strong></td>
+                      <td colSpan={5}>
+                        <strong>TOTAL</strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {formatRupiah(selectedCustomer.total_fix)}
+                        </strong>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </>
           ) : (
-              <p>Loading...</p>
+            <p>Loading...</p>
           )}
         </Modal.Body>
         <Modal.Footer>
